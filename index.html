@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   <div class="card">
+    <div class="search">
+        <input type="text" placeholder="enter city" spellcheck="false">
+        <button><img src="https://play-lh.googleusercontent.com/pY0nNax_PkBoQ5jyqLjF8LA07CzaNYOp7Wdgpk0oXxv6bzxUh50lDm9D5XbRPDJilw" alt="sample"/></button>
+    </div>
+    <div class="error">
+        <p>Invalid city name</p>
+    </div>
+    <div class="weather">
+        <img src="https://png.pngtree.com/png-clipart/20210527/ourmid/pngtree-blue-cloud-rain-logo-cute-weather-icon-png-image_3315900.jpg" alt="sample" class="weather-icon"/>
+        <h1 class="temp">20°C</h1>
+        <h2 class="city">HYDERABAD</h2>
+        <div class="details">
+            <div class="col">
+                <img src="https://w7.pngwing.com/pngs/426/803/png-transparent-computer-icons-moisture-humidity-moisture-thumbnail.png" alt="sample">
+                <div>
+                    <p class="humidity">50%</p>
+                    <p>Humidity</p>
+                </div>
+            </div>
+            <div class="col">
+                <img src="https://w7.pngwing.com/pngs/676/835/png-transparent-wind-speed-weather-forecasting-wind-text-number-anemometer-thumbnail.png" alt="sample">
+                <div>
+                    <p class="wind">15km/hr</p>
+                    <p>Wind Speed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div>
+   <script>
+    const api="b5aa7c90ceb5d50a5c06bd557209beda";
+    const apiurl="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+   
+    const searchBox=document.querySelector(".search input")
+    const searchBtn=document.querySelector(".search button")
+    const weatherIcon=document.querySelector(".weather-icon")
+    async function checkweather(city){
+        const response=await fetch(apiurl + city +`&appid=${api}`)
+        if(response.status==404){
+        document.querySelector(".error").style.display="block";
+        document.querySelector(".weather").style.display="none"
+    }
+    else{
+        var data=await response.json();
+        console.log(data);
+        document.querySelector(".city").innerHTML=data.name
+        document.querySelector(".temp").innerHTML=Math.round(data.main.temp )+ "°C"
+        document.querySelector(".humidity").innerHTML=data.main.humidity+"%"
+        document.querySelector(".wind").innerHTML=data.wind.speed+"km/hr"
+
+        if(data.weather[0].main=="Clouds"){
+            weatherIcon.src="https://cdn-icons-png.flaticon.com/512/1850/1850730.png" 
+        }
+        else if(data.weather[0].main=="Rain"){
+            weatherIcon.src="https://png.pngtree.com/png-clipart/20210527/ourmid/pngtree-blue-cloud-rain-logo-cute-weather-icon-png-image_3315900.jpg"
+        }
+        else if(data.weather[0].main=="Snow"){
+            weatherIcon.src="https://png.pngtree.com/png-clipart/20190516/original/pngtree-snow-vector-icon-png-image_3725323.jpg"
+        }
+        else if(data.weather[0].main=="Drizzle"){
+            weatherIcon.src="https://static.vecteezy.com/system/resources/previews/021/828/522/non_2x/icon-drizzle-weather-elements-symbol-icons-in-flat-style-good-for-prints-web-smartphone-app-posters-infographics-logo-sign-etc-vector.jpg"
+        }
+        else if(data.weather[0].main=="Clear"){
+            weatherIcon.src="https://seeklogo.com/images/S/sunny-weather-symbol-logo-4E2A5E54AA-seeklogo.com.png"
+        }
+       
+
+        document.querySelector(".weather").style.display="block"
+        document.querySelector(".error").style.display="none";
+
+    }
+       
+    }
+
+    searchBtn.addEventListener("click",()=>{
+        checkweather(searchBox.value)
+    })
+    
+   </script>
+</body>
+</html>
